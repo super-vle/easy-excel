@@ -8,7 +8,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Chenvle\\EasyExcel\\": "src/"
+            "SuperVle\\EasyExcel\\": "src/SuperVle/EasyExcel/"
         }
     },
     "authors": [
