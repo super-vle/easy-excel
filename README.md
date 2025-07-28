@@ -2,12 +2,12 @@
 
 1、安装
 ```
-composer require super-vle/easy_excel
+composer require  super-vle/easy-excel
 ```
 
 2、使用例子
 ```
-use SuperVle\EasyExcel\EasyExcel;
+use SuperVle\EasyExcel\Excel;
 
 $excel = new Excel();
 ```
