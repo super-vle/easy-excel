@@ -40,5 +40,27 @@ $data = [];
 //返回到浏览器，文件流形式
 $excel->output($data, $str, $field,'Xlsx');
 
+//文件名
+$excel->setFileName('文件名');
+
+//多表
+$more_table = [
+    [
+        'data'=>[],
+        'title'=>'',
+        'field'=>[],
+    ],[
+        'data'=>[],
+        'title'=>'',
+        'field'=>[],
+    ],
+];
+//或
+$more_table = [
+    'data'=>[],
+    'title'=>'',
+    'field'=>[],
+];
+
 //保存到服务器返回路径(前面不用'/'，后面也不用"/")
-$excel->output($data, $str, $field,'Xlsx','upload');
+$excel->output($data, $str, $field,'Xlsx','upload',$more_table);

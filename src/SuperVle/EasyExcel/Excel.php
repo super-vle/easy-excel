@@ -9,7 +9,20 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class Excel
 {
-    public function output($data, $title, $field, $fileType = 'Xlsx',$file_or_url = 'file',$two_table = false)
+    protected $file_name;
+
+    public function __construct()
+    {
+        $this->file_name = time();
+    }
+
+    public function setFileName($file_name)
+    {
+        $this->file_name = $file_name;
+
+    }
+
+    public function output($data, $title, $field, $fileType = 'Xlsx',$file_or_url = 'file',$more_table = false)
     {
 
         $spreadsheet = new Spreadsheet();
@@ -21,15 +34,15 @@ class Excel
 
         $this->write_excel($sheet,$data, $title, $field);
 
-        if($two_table){
-            if(isset($two_table['data']) && isset($two_table['field'])){
+        if($more_table){
+            if(isset($more_table['data']) && isset($more_table['field'])){
                 $spreadsheet->createSheet();
                 //获取当前表
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
-                $this->write_excel($sheet,$two_table['data'], $two_table['title'], $two_table['field']);
+                $this->write_excel($sheet,$more_table['data'], $more_table['title'], $more_table['field']);
             }else{
-                if(is_array($two_table)){
-                    foreach($two_table as $k => $v){
+                if(is_array($more_table)){
+                    foreach($more_table as $k => $v){
                         if(isset($v['data']) && isset($v['field'])){
                             $spreadsheet->createSheet();
                             //获取当前表
@@ -45,11 +58,12 @@ class Excel
 
         $writer = IOFactory::createWriter($spreadsheet, $fileType);
 
+        $fileName = $this->file_name;
         if($file_or_url === 'file'){
-            $this->excelBrowserExport(time(), $fileType);
+            $this->excelBrowserExport($fileName, $fileType);
             $writer->save('php://output');
         }else{
-            $filename = $file_or_url . '/' . time() .'.'. $fileType;
+            $filename = $file_or_url . '/' . $fileName .'.'. $fileType;
             $writer->save($filename);
             return '/'.$filename;
         }
@@ -60,11 +74,12 @@ class Excel
         $end_en   = $en[count($field) - 1];
         $end_line = count($data) + 2;
 
-        //表名称
-        $sheet->setTitle($title?:time());
 
         //表标题
         if($title){
+            //表名称
+            $sheet->setTitle($title);
+
             $sheet->setCellValue('A1', $title);
             $sheet->getRowDimension('1')->setRowHeight(30);
             //合并
