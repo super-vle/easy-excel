@@ -1,9 +1,9 @@
 <?php
 require_once '../vendor/autoload.php';
 
-use SuperVle\EasyExcel\EasyExcel;
+use SuperVle\EasyExcel\Excel;
 
-$excel = new EasyExcel();
+$excel = new Excel();
 
 
 /*导入*/

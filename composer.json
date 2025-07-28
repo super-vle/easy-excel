@@ -1,5 +1,5 @@
 {
-    "name": "super-vle/easy_excel",
+    "name": "super-vle/easy-excel",
     "type": "library",
     "require": {
         "php": ">=7.4.0",
