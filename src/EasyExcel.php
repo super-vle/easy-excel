@@ -1,6 +1,6 @@
 <?php
 
-namespace Chenvle\EasyExcel;
+namespace SuperVle\EasyExcel;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;

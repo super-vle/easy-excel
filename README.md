@@ -2,12 +2,12 @@
 
 1、安装
 ```
-composer require chenvle/easy_excel
+composer require super-vle/easy_excel
 ```
 
 2、使用例子
 ```
-use Chenvle\EasyExcel\EasyExcel;
+use SuperVle\EasyExcel\EasyExcel;
 
 $excel = new Excel();
 ```
