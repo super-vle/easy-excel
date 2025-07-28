@@ -21,17 +21,25 @@ class Excel
 
         $this->write_excel($sheet,$data, $title, $field);
 
-        if($two_table && isset($two_table['data']) && isset($two_table['title']) && isset($two_table['field']) ){
-
-            $spreadsheet->createSheet();
-            //获取当前表
-            $sheet = $spreadsheet->setActiveSheetIndex(1);
-            $this->write_excel($sheet,$two_table['data'], $two_table['title'], $two_table['field']);
+        if($two_table){
+            if(isset($two_table['data']) && isset($two_table['field'])){
+                $spreadsheet->createSheet();
+                //获取当前表
+                $sheet = $spreadsheet->setActiveSheetIndex(1);
+                $this->write_excel($sheet,$two_table['data'], $two_table['title'], $two_table['field']);
+            }else{
+                if(is_array($two_table)){
+                    foreach($two_table as $k => $v){
+                        if(isset($v['data']) && isset($v['field'])){
+                            $spreadsheet->createSheet();
+                            //获取当前表
+                            $sheet = $spreadsheet->setActiveSheetIndex($k+1);
+                            $this->write_excel($sheet,$v['data'], $v['title'], $v['field']);
+                        }
+                    }
+                }
+            }
         }
-
-
-
-
 
 
 
@@ -53,57 +61,62 @@ class Excel
         $end_line = count($data) + 2;
 
         //表名称
-        $sheet->setTitle($title);
+        $sheet->setTitle($title?:time());
 
         //表标题
-        $sheet->setCellValue('A1', $title);
-        $sheet->getRowDimension('1')->setRowHeight(30);
-
-
-        //合并
-        $sheet->mergeCells('A1:' . $end_en . '1');
-        $styleArrayBody = [
-            //字体
-            'font' => [
-                //加粗
-                'bold'  => true,
-                //颜色
-                'color' => ['rgb' => '000000'],
-                //字体大小
-                'size'  => 16,
-                //字体名称
-                'name'  => 'Verdana'
-            ]
-        ];
-        $sheet->getStyle('A1:' . $end_en . '1')->applyFromArray($styleArrayBody);//A1:J2 设置样色
-
-
-        /*整体样式*/
-        $styleArrayBody = [
-            //边框
-            'borders'   => [
-                'allBorders' => [
-                    //边框
-                    'borderStyle' => Border::BORDER_THIN,
+        if($title){
+            $sheet->setCellValue('A1', $title);
+            $sheet->getRowDimension('1')->setRowHeight(30);
+            //合并
+            $sheet->mergeCells('A1:' . $end_en . '1');
+            $styleArrayBody = [
+                //字体
+                'font' => [
+                    //加粗
+                    'bold'  => true,
                     //颜色
-                    'color'       => ['argb' => '666666'],
+                    'color' => ['rgb' => '000000'],
+                    //字体大小
+                    'size'  => 16,
+                    //字体名称
+                    'name'  => 'Verdana'
+                ]
+            ];
+            $sheet->getStyle('A1:' . $end_en . '1')->applyFromArray($styleArrayBody);//A1:J2 设置样色
+
+            /*整体样式*/
+            $styleArrayBody = [
+                //边框
+                'borders'   => [
+                    'allBorders' => [
+                        //边框
+                        'borderStyle' => Border::BORDER_THIN,
+                        //颜色
+                        'color'       => ['argb' => '666666'],
+                    ],
                 ],
-            ],
-            //居中
-            'alignment' => [
-                //水平居中
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                //垂直居中
-                'vertical'   => Alignment::VERTICAL_CENTER
-            ],
-        ];
-        $sheet->getStyle('A1:' . $end_en . $end_line)->applyFromArray($styleArrayBody);//A1:J2 设置样色
+                //居中
+                'alignment' => [
+                    //水平居中
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    //垂直居中
+                    'vertical'   => Alignment::VERTICAL_CENTER
+                ],
+            ];
+            $sheet->getStyle('A1:' . $end_en . $end_line)->applyFromArray($styleArrayBody);//A1:J2 设置样色
+        }
+
+        if($title){
+            $field_line = '2';
+        }else{
+            $field_line = '1';
+        }
 
         //表头
         $num = 0;
         foreach ($field as $i => $o) {
             //设置表头
-            $sheet->setCellValue($en[$num] . '2', $o['value']);
+            $sheet->setCellValue($en[$num] . $field_line, $o['value']);
             //列宽
             $sheet->getColumnDimension($en[$num])->setWidth($o['width']);
             $num++;
@@ -139,7 +152,9 @@ class Excel
                     }
                     $value = $res_value;
                 }
-                $sheet->setCellValue($en[$num] . ($k + 3), $value);
+
+                $data_line = (int)$k + 1 + (int)$field_line;
+                $sheet->setCellValue($en[$num] . $data_line, $value);
 
 
                 if(isset($o['color'])){
@@ -150,7 +165,7 @@ class Excel
                             'color' => ['rgb' => $o['color']],
                         ]
                     ];
-                    $sheet->getStyle($en[$num] . ($k + 3))->applyFromArray($styleArrayBody);
+                    $sheet->getStyle($en[$num] . $data_line)->applyFromArray($styleArrayBody);
                 }
             }
             $num++;
